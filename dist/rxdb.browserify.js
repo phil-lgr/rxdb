@@ -13792,7 +13792,7 @@ module.exports = function (it) {
 };
 
 },{"./_is-object":95}],85:[function(require,module,exports){
-var core = module.exports = { version: '2.6.7' };
+var core = module.exports = { version: '2.6.5' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 },{}],86:[function(require,module,exports){
@@ -15327,7 +15327,6 @@ module.exports.f = function (C) {
 },{"./_a-function":100}],164:[function(require,module,exports){
 'use strict';
 // 19.1.2.1 Object.assign(target, source, ...)
-var DESCRIPTORS = require('./_descriptors');
 var getKeys = require('./_object-keys');
 var gOPS = require('./_object-gops');
 var pIE = require('./_object-pie');
@@ -15357,14 +15356,11 @@ module.exports = !$assign || require('./_fails')(function () {
     var length = keys.length;
     var j = 0;
     var key;
-    while (length > j) {
-      key = keys[j++];
-      if (!DESCRIPTORS || isEnum.call(S, key)) T[key] = S[key];
-    }
+    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
   } return T;
 } : $assign;
 
-},{"./_descriptors":125,"./_fails":131,"./_iobject":144,"./_object-gops":171,"./_object-keys":174,"./_object-pie":175,"./_to-object":209}],165:[function(require,module,exports){
+},{"./_fails":131,"./_iobject":144,"./_object-gops":171,"./_object-keys":174,"./_object-pie":175,"./_to-object":209}],165:[function(require,module,exports){
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = require('./_an-object');
 var dPs = require('./_object-dps');
@@ -15534,7 +15530,6 @@ module.exports = function (KEY, exec) {
 };
 
 },{"./_core":119,"./_export":129,"./_fails":131}],177:[function(require,module,exports){
-var DESCRIPTORS = require('./_descriptors');
 var getKeys = require('./_object-keys');
 var toIObject = require('./_to-iobject');
 var isEnum = require('./_object-pie').f;
@@ -15546,17 +15541,13 @@ module.exports = function (isEntries) {
     var i = 0;
     var result = [];
     var key;
-    while (length > i) {
-      key = keys[i++];
-      if (!DESCRIPTORS || isEnum.call(O, key)) {
-        result.push(isEntries ? [key, O[key]] : O[key]);
-      }
-    }
-    return result;
+    while (length > i) if (isEnum.call(O, key = keys[i++])) {
+      result.push(isEntries ? [key, O[key]] : O[key]);
+    } return result;
   };
 };
 
-},{"./_descriptors":125,"./_object-keys":174,"./_object-pie":175,"./_to-iobject":207}],178:[function(require,module,exports){
+},{"./_object-keys":174,"./_object-pie":175,"./_to-iobject":207}],178:[function(require,module,exports){
 // all object keys, includes non-enumerable and symbols
 var gOPN = require('./_object-gopn');
 var gOPS = require('./_object-gops');
@@ -19336,14 +19327,12 @@ var enumKeys = require('./_enum-keys');
 var isArray = require('./_is-array');
 var anObject = require('./_an-object');
 var isObject = require('./_is-object');
-var toObject = require('./_to-object');
 var toIObject = require('./_to-iobject');
 var toPrimitive = require('./_to-primitive');
 var createDesc = require('./_property-desc');
 var _create = require('./_object-create');
 var gOPNExt = require('./_object-gopn-ext');
 var $GOPD = require('./_object-gopd');
-var $GOPS = require('./_object-gops');
 var $DP = require('./_object-dp');
 var $keys = require('./_object-keys');
 var gOPD = $GOPD.f;
@@ -19360,7 +19349,7 @@ var SymbolRegistry = shared('symbol-registry');
 var AllSymbols = shared('symbols');
 var OPSymbols = shared('op-symbols');
 var ObjectProto = Object[PROTOTYPE];
-var USE_NATIVE = typeof $Symbol == 'function' && !!$GOPS.f;
+var USE_NATIVE = typeof $Symbol == 'function';
 var QObject = global.QObject;
 // Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
 var setter = !QObject || !QObject[PROTOTYPE] || !QObject[PROTOTYPE].findChild;
@@ -19470,7 +19459,7 @@ if (!USE_NATIVE) {
   $DP.f = $defineProperty;
   require('./_object-gopn').f = gOPNExt.f = $getOwnPropertyNames;
   require('./_object-pie').f = $propertyIsEnumerable;
-  $GOPS.f = $getOwnPropertySymbols;
+  require('./_object-gops').f = $getOwnPropertySymbols;
 
   if (DESCRIPTORS && !require('./_library')) {
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
@@ -19521,16 +19510,6 @@ $export($export.S + $export.F * !USE_NATIVE, 'Object', {
   getOwnPropertySymbols: $getOwnPropertySymbols
 });
 
-// Chrome 38 and 39 `Object.getOwnPropertySymbols` fails on primitives
-// https://bugs.chromium.org/p/v8/issues/detail?id=3443
-var FAILS_ON_PRIMITIVES = $fails(function () { $GOPS.f(1); });
-
-$export($export.S + $export.F * FAILS_ON_PRIMITIVES, 'Object', {
-  getOwnPropertySymbols: function getOwnPropertySymbols(it) {
-    return $GOPS.f(toObject(it));
-  }
-});
-
 // 24.3.2 JSON.stringify(value [, replacer [, space]])
 $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
   var S = $Symbol();
@@ -19564,7 +19543,7 @@ setToStringTag(Math, 'Math', true);
 // 24.3.3 JSON[@@toStringTag]
 setToStringTag(global.JSON, 'JSON', true);
 
-},{"./_an-object":105,"./_descriptors":125,"./_enum-keys":128,"./_export":129,"./_fails":131,"./_global":137,"./_has":138,"./_hide":139,"./_is-array":146,"./_is-object":148,"./_library":156,"./_meta":161,"./_object-create":165,"./_object-dp":166,"./_object-gopd":168,"./_object-gopn":170,"./_object-gopn-ext":169,"./_object-gops":171,"./_object-keys":174,"./_object-pie":175,"./_property-desc":183,"./_redefine":185,"./_set-to-string-tag":191,"./_shared":193,"./_to-iobject":207,"./_to-object":209,"./_to-primitive":210,"./_uid":214,"./_wks":219,"./_wks-define":217,"./_wks-ext":218}],346:[function(require,module,exports){
+},{"./_an-object":105,"./_descriptors":125,"./_enum-keys":128,"./_export":129,"./_fails":131,"./_global":137,"./_has":138,"./_hide":139,"./_is-array":146,"./_is-object":148,"./_library":156,"./_meta":161,"./_object-create":165,"./_object-dp":166,"./_object-gopd":168,"./_object-gopn":170,"./_object-gopn-ext":169,"./_object-gops":171,"./_object-keys":174,"./_object-pie":175,"./_property-desc":183,"./_redefine":185,"./_set-to-string-tag":191,"./_shared":193,"./_to-iobject":207,"./_to-primitive":210,"./_uid":214,"./_wks":219,"./_wks-define":217,"./_wks-ext":218}],346:[function(require,module,exports){
 'use strict';
 var $export = require('./_export');
 var $typed = require('./_typed');
@@ -40220,9 +40199,6 @@ var Subscription = (function () {
     };
     Subscription.prototype.add = function (teardown) {
         var subscription = teardown;
-        if (!teardown) {
-            return Subscription.EMPTY;
-        }
         switch (typeof teardown) {
             case 'function':
                 subscription = new Subscription(teardown);
@@ -40241,6 +40217,9 @@ var Subscription = (function () {
                 }
                 break;
             default: {
+                if (!teardown) {
+                    return Subscription.EMPTY;
+                }
                 throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
             }
         }
@@ -40917,6 +40896,7 @@ var Observable_1 = require("../Observable");
 var isArray_1 = require("../util/isArray");
 var map_1 = require("../operators/map");
 var isObject_1 = require("../util/isObject");
+var isObservable_1 = require("../util/isObservable");
 var from_1 = require("./from");
 function forkJoin() {
     var sources = [];
@@ -40928,7 +40908,7 @@ function forkJoin() {
         if (isArray_1.isArray(first_1)) {
             return forkJoinInternal(first_1, null);
         }
-        if (isObject_1.isObject(first_1) && Object.getPrototypeOf(first_1) === Object.prototype) {
+        if (isObject_1.isObject(first_1) && !isObservable_1.isObservable(first_1)) {
             var keys = Object.keys(first_1);
             return forkJoinInternal(keys.map(function (key) { return first_1[key]; }), keys);
         }
@@ -40982,7 +40962,7 @@ function forkJoinInternal(sources, keys) {
     });
 }
 
-},{"../Observable":523,"../operators/map":600,"../util/isArray":695,"../util/isObject":702,"./from":542}],542:[function(require,module,exports){
+},{"../Observable":523,"../operators/map":600,"../util/isArray":695,"../util/isObject":702,"../util/isObservable":703,"./from":542}],542:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Observable_1 = require("../Observable");
@@ -43446,17 +43426,16 @@ exports.elementAt = elementAt;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var concat_1 = require("../observable/concat");
-var of_1 = require("../observable/of");
 function endWith() {
     var array = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         array[_i] = arguments[_i];
     }
-    return function (source) { return concat_1.concat(source, of_1.of.apply(void 0, array)); };
+    return function (source) { return concat_1.concat.apply(void 0, [source].concat(array)); };
 }
 exports.endWith = endWith;
 
-},{"../observable/concat":538,"../observable/of":551}],587:[function(require,module,exports){
+},{"../observable/concat":538}],587:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -44979,17 +44958,13 @@ var PairwiseSubscriber = (function (_super) {
         return _this;
     }
     PairwiseSubscriber.prototype._next = function (value) {
-        var pair;
         if (this.hasPrev) {
-            pair = [this.prev, value];
+            this.destination.next([this.prev, value]);
         }
         else {
             this.hasPrev = true;
         }
         this.prev = value;
-        if (pair) {
-            this.destination.next(pair);
-        }
     };
     return PairwiseSubscriber;
 }(Subscriber_1.Subscriber));
