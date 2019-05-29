@@ -109,7 +109,6 @@ var prototypes = {
    * @param {[type]} prototype of RxSchema
    */
   RxSchema: function RxSchema(proto) {
-    proto._getValidator = _getValidator;
     proto.validate = validate;
   }
 };

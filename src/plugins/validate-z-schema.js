@@ -88,7 +88,6 @@ export const prototypes = {
      * @param {[type]} prototype of RxSchema
      */
     RxSchema: (proto) => {
-        proto._getValidator = _getValidator;
         proto.validate = validate;
     }
 };
