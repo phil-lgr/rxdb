@@ -98,7 +98,7 @@ var validate = function validate(obj) {
 var runAfterSchemaCreated = function runAfterSchemaCreated(rxSchema) {
   // pre-generate the validator-z-schema from the schema
   (0, _util.requestIdleCallbackIfAvailable)(function () {
-    return _getValidator(rxSchema);
+    return _getValidator.bind(rxSchema, rxSchema);
   });
 };
 
@@ -110,6 +110,7 @@ var prototypes = {
    * @param {[type]} prototype of RxSchema
    */
   RxSchema: function RxSchema(proto) {
+    proto._getValidator = _getValidator;
     proto.validate = validate;
   }
 };

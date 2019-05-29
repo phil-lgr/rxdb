@@ -79,7 +79,7 @@ const validate = function (obj, schemaPath = '') {
 
 const runAfterSchemaCreated = rxSchema => {
     // pre-generate the validator-z-schema from the schema
-    requestIdleCallbackIfAvailable(() => _getValidator(rxSchema));
+    requestIdleCallbackIfAvailable(() => _getValidator.bind(rxSchema, rxSchema));
 };
 
 export const rxdb = true;
@@ -89,6 +89,7 @@ export const prototypes = {
      * @param {[type]} prototype of RxSchema
      */
     RxSchema: (proto) => {
+        proto._getValidator = _getValidator;
         proto.validate = validate;
     }
 };
