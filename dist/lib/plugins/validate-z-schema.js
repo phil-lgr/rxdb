@@ -38,7 +38,7 @@ function _getValidator(rxSchema) {
   var validatorsOfHash = validatorsCache[hash];
 
   if (!validatorsOfHash[schemaPath]) {
-    var schemaPart = schemaPath === '' ? rxSchema.jsonID : rxSchema.getSchemaByObjectPath(schemaPath);
+    var schemaPart = schemaPath === '' ? this.jsonID : this.getSchemaByObjectPath(schemaPath);
 
     if (!schemaPart) {
       throw (0, _rxError.newRxError)('VD1', {
