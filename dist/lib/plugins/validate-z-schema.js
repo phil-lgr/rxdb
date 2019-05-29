@@ -38,7 +38,8 @@ function _getValidator(rxSchema) {
   var validatorsOfHash = validatorsCache[hash];
 
   if (!validatorsOfHash[schemaPath]) {
-    var schemaPart = schemaPath === '' ? this.jsonID : this.getSchemaByObjectPath(schemaPath);
+    console.log(rxSchema);
+    var schemaPart = schemaPath === '' ? rxSchema.jsonID : rxSchema.getSchemaByObjectPath(schemaPath);
 
     if (!schemaPart) {
       throw (0, _rxError.newRxError)('VD1', {
@@ -68,7 +69,7 @@ function _getValidator(rxSchema) {
 var validate = function validate(obj) {
   var schemaPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
-  var validator = this._getValidator(schemaPath);
+  var validator = _getValidator(this, schemaPath);
 
   var useValidator = validator(obj);
   /** @type {ZSchema.SchemaErrorDetail[]} */
